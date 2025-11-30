@@ -14,7 +14,8 @@
 
     <style>
         :root {
-            --brand-color: #f9852d;
+            --brand-color: #f9852d; /* Original Orange (Outer Ring - Animated Pulse) */
+            --dark-orange: #e36e09; /* Darker Orange (Inner Ring - NOW PURE ORANGE) */
             --text-primary: #333333;
             --text-secondary: #666666;
             --text-light: #888888;
@@ -23,8 +24,7 @@
             --logo-blue: #003a70;
         }
 
-        html,
-        body {
+        html, body {
             margin: 0;
             padding: 0;
             width: 100%;
@@ -37,23 +37,20 @@
             display: flex;
             justify-content: center;
             align-items: stretch;
-            box-sizing: border-box;
             color: var(--text-primary);
         }
 
         .ticket-container {
+            max-width: 480px; 
             background-color: var(--card-bg);
-            border-radius: 0;
-            box-shadow: 0 0 0 rgba(0, 0, 0, 0);
             width: 100%;
             height: 100%;
-            max-width: 100%;
-            max-height: 100%;
             padding: 24px;
-            box-sizing: border-box;
             display: flex;
             flex-direction: column;
             text-align: center;
+            box-sizing: border-box;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
         }
 
         /* ---------------- HEADER ---------------- */
@@ -61,7 +58,7 @@
         .card-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start; /* align title + subtitle with close icon */
+            align-items: flex-start;
             width: 100%;
             margin-bottom: 24px;
         }
@@ -69,65 +66,129 @@
         .header-text {
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
+            text-align: left;
         }
 
         .header-text h1 {
             font-size: 1.9rem;
             margin: 0;
-            line-height: 1.1;
         }
 
         .header-text p {
             font-size: 1.05rem;
             margin: 6px 0 0;
-            line-height: 1.2;
             color: var(--text-secondary);
+            line-height: 1.2;
         }
 
         .close-btn {
             font-size: 2.3rem;
             color: var(--text-light);
             cursor: pointer;
-            line-height: 1;
-            margin-top: 4px; /* small nudge so it visually lines up with CTtransit text */
+            margin-top: 4px;
+            user-select: none;
         }
 
-        /* ---------------- CIRCLE / VISUAL ---------------- */
+        /* ---------------- CIRCLE VISUAL ---------------- */
 
         .ticket-visual {
             margin: 20px 0 26px;
             display: flex;
             justify-content: center;
-            align-items: center;
             flex-grow: 1;
+            align-items: center;
         }
 
         .circle {
-            width: 210px;
-            height: 210px;
-            border: 46px solid var(--brand-color);
+            /* Base size 260px. Background color forms the fixed inner edge of the light orange ring. */
+            position: relative; 
+            width: 260px;
+            height: 260px;
             border-radius: 50%;
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+            background-color: var(--brand-color); /* Light Orange (Fixed base color) */
+            
+            /* Outer Ring Pulse (Box-shadow creates the outward animation) */
+            animation: outer-ring-pulse 2.5s infinite cubic-bezier(0.66, 0, 0, 1); 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+        }
+
+        /* Inner dark orange ring container (fixed size) */
+        .inner-ring {
+            position: absolute;
+            /* Light orange ring thickness is 26px (Fixed) */
+            top: 26px; 
+            left: 26px; 
+            right: 26px;
+            bottom: 26px;
+            border-radius: 50%;
+            background-color: var(--dark-orange); /* Dark Orange Ring Color (Animated by ::before) */
             display: flex;
             justify-content: center;
             align-items: center;
-            animation: pulse 2.5s infinite cubic-bezier(0.66, 0, 0, 1);
+        }
+        
+        /* The actual white background for the content - ANIMATED INSET CHANGES DARK RING THICKNESS */
+        .inner-ring::before {
+            content: '';
+            position: absolute;
+            
+            /* Initial Inset (15px) = 11px Dark Ring Thickness (26px - 15px) */
+            top: 15px; 
+            left: 15px; 
+            right: 15px;
+            bottom: 15px;
+            
+            border-radius: 50%;
+            background-color: var(--card-bg); /* White background for the logo/text */
+            
+            /* Animation applied directly to position properties */
+            animation: inner-ring-width-pulse 2.5s infinite cubic-bezier(0.66, 0, 0, 1); 
         }
 
-        @keyframes pulse {
-            0%,
-            100% {
-                transform: scale(0.95);
+        /* Keyframes for the outer light orange ring's width change (using box-shadow) */
+        @keyframes outer-ring-pulse {
+            0% {
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1), 0 0 0 0px var(--brand-color);
             }
-            70% {
-                transform: scale(1);
+            50% {
+                /* Expands outward */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1), 0 0 0 15px rgba(249, 133, 45, 0.6); 
+            }
+            100% {
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1), 0 0 0 0px rgba(249, 133, 45, 0);
             }
         }
+
+        /* Keyframes for the inner dark orange ring's thickness change (by animating white circle's inset) */
+        @keyframes inner-ring-width-pulse {
+            0%, 100% {
+                /* Thin dark ring (11px thickness) */
+                top: 15px; 
+                left: 15px; 
+                right: 15px;
+                bottom: 15px;
+            }
+            50% {
+                /* Thick dark ring (21px thickness) */
+                top: 5px; 
+                left: 5px;
+                right: 5px;
+                bottom: 5px;
+            }
+        }
+
 
         .circle-content {
+            position: relative; 
+            z-index: 2; 
             display: flex;
             gap: 10px;
             align-items: center;
+            /* CONTENT IS STATIC - NO ANIMATION APPLIED */
+            white-space: nowrap; 
         }
 
         .circle-content .logo {
@@ -139,7 +200,6 @@
             font-size: 1.25rem;
             font-weight: 700;
             color: var(--logo-blue);
-            letter-spacing: 0.02em;
         }
 
         /* ---------------- TIME + DETAILS ---------------- */
@@ -148,6 +208,7 @@
             font-size: 3.4rem;
             font-weight: 600;
             margin: 0 0 22px;
+            color: var(--text-primary);
         }
 
         .details-card {
@@ -163,13 +224,15 @@
         .details-card h2 {
             font-size: 1.5rem;
             margin: 0 0 8px;
+            font-weight: 700;
+            line-height: 1.3;
+            word-break: break-word; 
         }
 
         .details-card .cities {
             font-size: 1rem;
             color: var(--text-secondary);
             margin: 0 0 16px;
-            line-height: 1.4;
         }
 
         .details-card .expiration-info {
@@ -177,110 +240,142 @@
             color: var(--text-light);
         }
 
-        /* ---------------- MOBILE ---------------- */
+        /* ---------------- MOBILE RESPONSIVENESS ---------------- */
 
         @media (max-width: 480px) {
-            .ticket-container {
-                padding: 18px;
+            .ticket-container { padding: 18px; }
+
+            .header-text h1 { font-size: 1.7rem; }
+
+            .header-text p { font-size: 0.95rem; }
+
+            .close-btn { font-size: 2rem; }
+
+            .circle { 
+                /* Size remains 220px on mobile */
+                width: 220px; 
+                height: 220px; 
+                /* Apply mobile specific pulse */
+                animation: outer-ring-pulse-mobile 2.5s infinite cubic-bezier(0.66, 0, 0, 1);
+            }
+            
+            /* Adjust inner ring positioning for smaller circle */
+            .inner-ring {
+                /* Light orange ring thickness is 24px (Fixed) */
+                top: 24px; 
+                left: 24px;
+                right: 24px;
+                bottom: 24px;
+            }
+            
+            .inner-ring::before {
+                /* Base Inset (15px) = 9px Dark Ring Thickness (24px - 15px) */
+                top: 15px; 
+                left: 15px;
+                right: 15px;
+                bottom: 15px;
+                animation: inner-ring-width-pulse-mobile 2.5s infinite cubic-bezier(0.66, 0, 0, 1);
+            }
+            
+            /* NEW: Mobile Keyframes for outer ring pulse (smaller effect) */
+            @keyframes outer-ring-pulse-mobile {
+                0% {
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1), 0 0 0 0px var(--brand-color);
+                }
+                50% {
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1), 0 0 0 20px rgba(249, 133, 45, 0.6); /* Smaller pulse */
+                }
+                100% {
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1), 0 0 0 0px rgba(249, 133, 45, 0);
+                }
             }
 
-            .header-text h1 {
-                font-size: 1.7rem;
+            /* NEW: Mobile Keyframes for dark ring pulse */
+            @keyframes inner-ring-width-pulse-mobile {
+                0%, 100% {
+                    /* Thin dark ring (9px thickness) */
+                    top: 15px; 
+                    left: 15px;
+                    right: 15px;
+                    bottom: 15px;
+                }
+                50% {
+                    /* Thick dark ring (19px thickness) */
+                    top: 5px; 
+                    left: 5px;
+                    right: 5px;
+                    bottom: 5px;
+                }
             }
 
-            .header-text p {
-                font-size: 0.95rem;
-            }
 
-            .close-btn {
-                font-size: 2rem;
-            }
+            .circle-content .logo { width: 34px; }
 
-            .circle {
-                width: 180px;
-                height: 180px;
-                border-width: 38px;
-            }
+            .circle-content .logo-text { font-size: 1.15rem; }
 
-            .circle-content .logo {
-                width: 34px;
-            }
-
-            .circle-content .logo-text {
-                font-size: 1.15rem;
-            }
-
-            .time-display {
-                font-size: 2.8rem;
-            }
-
-            .details-card {
-                padding: 18px;
-            }
+            .time-display { font-size: 2.8rem; }
 
             .details-card h2 {
                 font-size: 1.35rem;
-            }
-
-            .details-card .cities {
-                font-size: 0.95rem;
-            }
-
-            .details-card .expiration-info {
-                font-size: 0.9rem;
+                line-height: 1.35;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="ticket-container">
-        <!-- HEADER -->
-        <div class="card-header">
+
+        <!-- HEADER --><div class="card-header">
             <div class="header-text">
                 <h1>CTtransit</h1>
                 <p>Show operator your ticket</p>
             </div>
-            <div class="close-btn" aria-label="Close ticket">&times;</div>
+            <div class="close-btn">&times;</div>
         </div>
 
-        <!-- CIRCLE VISUAL -->
-        <div class="ticket-visual">
+        <!-- CIRCLE VISUAL (PULSING RING) --><div class="ticket-visual">
             <div class="circle">
-                <div class="circle-content">
-                    <img
-                        src="https://upload.wikimedia.org/wikipedia/en/8/8b/CTtransit_logo.png"
-                        alt="CTtransit Logo"
-                        class="logo"
-                    />
-                    <span class="logo-text">CT transit</span>
+                <!-- Inner dark orange ring (Static Size) --><div class="inner-ring">
+                    <!-- White circle with animated inset (changes dark ring width) -->
+                    <div class="circle-content">
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/en/8/8b/CTtransit_logo.png"
+                            class="logo"
+                            alt="CTtransit Logo"
+                            onerror="this.onerror=null; this.src='https://placehold.co/40x40/003a70/ffffff?text=CT';"
+                        />
+                        <span class="logo-text">CT transit</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- LIVE TIME -->
-        <div class="time-display" id="live-time-display">
-            12:00:00 AM
-        </div>
+        <!-- TIME --><div class="time-display" id="live-time-display">12:00:00 AM</div>
 
-        <!-- DETAILS -->
-        <div class="details-card">
-            <h2>Adult 2 Hour</h2>
+        <!-- DETAILS --><div class="details-card">
+            <h2>Adult 2 Hour - Local Service</h2>
+
             <p class="cities">
                 Hartford, New Haven, Stamford, Bristol, Meriden, New Britain,
                 Wallingford, and Waterbury
             </p>
-            <div class="expiration-info" id="expiration-display">
-                Expires...
-            </div>
+
+            <div class="expiration-info" id="expiration-display">Expires...</div>
         </div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+
             const liveTimeElement = document.getElementById("live-time-display");
             const expirationElement = document.getElementById("expiration-display");
 
+            /**
+             * Updates the live time display every second.
+             */
             function updateLiveTime() {
+                // Using America/New_York timezone for CT Transit context
                 const now = new Date();
                 const options = {
                     timeZone: "America/New_York",
@@ -289,39 +384,40 @@
                     second: "2-digit",
                     hour12: true,
                 };
-
-                const timeString = new Intl.DateTimeFormat("en-US", options).format(
-                    now
-                );
-                liveTimeElement.textContent = timeString;
+                liveTimeElement.textContent =
+                    new Intl.DateTimeFormat("en-US", options).format(now);
             }
 
+            /**
+             * Calculates and displays the ticket expiration time (current time + 2 hours).
+             */
             function setExpirationTime() {
                 const expirationTime = new Date();
+                // Add 2 hours for a 2-Hour Pass
                 expirationTime.setHours(expirationTime.getHours() + 2);
 
                 const options = {
                     timeZone: "America/New_York",
                     month: "short",
                     day: "numeric",
-                    year: "numeric",
                     hour: "numeric",
                     minute: "2-digit",
                     hour12: true,
                 };
 
-                const formattedExpiration = new Intl.DateTimeFormat(
-                    "en-US",
-                    options
-                )
-                    .format(expirationTime)
-                    .replace(",", ",")
-                    .replace(" at ", " ")
-                    .replace(/,(\s\d{1,2}:)/, " at $1");
+                const formattedDate = new Intl.DateTimeFormat("en-US", {
+                    month: "short", day: "numeric"
+                }).format(expirationTime);
 
-                expirationElement.textContent = `Expires ${formattedExpiration}`;
+                const formattedTime = new Intl.DateTimeFormat("en-US", {
+                    hour: "numeric", minute: "2-digit", hour12: true
+                }).format(expirationTime);
+
+                // Example: Expires Sep 15 at 1:30 PM
+                expirationElement.textContent = `Expires ${formattedDate} at ${formattedTime}`;
             }
 
+            // Initial call and set up interval for live time
             updateLiveTime();
             setExpirationTime();
             setInterval(updateLiveTime, 1000);
