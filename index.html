@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CTtransit Ticket</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      /* Lotus + Dark Green theme (animated circle) */
+      --brand-color: #4FAE5A;              /* Lotus green (pulse/glow) */
+      --brand-color-rgb: 79, 174, 90;      /* RGB for rgba() usage */
+      --dark-orange: #0B4D1A;              /* Deep dark green (inner ring) */
+
+      /* Blended outer ring fill (lotus -> dark green) */
+      --brand-gradient: radial-gradient(
+        circle at 30% 30%,
+        #6FD67A 0%,
+        #4FAE5A 45%,
+        #1F7A3A 70%,
+        #0B4D1A 100%
+      );
+
+      --text-primary: #333333;
+      --text-secondary: #666666;
+      --text-light: #888888;
+      --bg-color: #f0f2ff;
+      --card-bg: #ffffff;
+      --logo-blue: #003a70;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      font-family: "Roboto", sans-serif;
+      background-color: var(--bg-color);
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      color: var(--text-primary);
+    }
+
+    .ticket-container {
+      max-width: 480px;
+      background-color: var(--card-bg);
+      width: 100%;
+      height: 100%;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      box-sizing: border-box;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ---------------- HEADER ---------------- */
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      width: 100%;
+      margin-bottom: 24px;
+    }
+
+    .header-text {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .header-text h1 {
+      font-size: 1.9rem;
+      margin: 0;
+    }
+
+    .header-text p {
+      font-size: 1.05rem;
+      margin: 6px 0 0;
+      color: var(--text-secondary);
+      line-height: 1.2;
+    }
+
+    .close-btn {
+      font-size: 2.3rem;
+      color: var(--text-light);
+      cursor: pointer;
+      margin-top: 4px;
+      user-select: none;
+    }
+
+    /* ---------------- CIRCLE VISUAL ---------------- */
+
+    .ticket-visual {
+      margin: 20px 0 26px;
+      display: flex;
+      justify-content: center;
+      flex-grow: 1;
+      align-items: center;
+    }
+
+    .circle {
+      position: relative;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      /* lotus + dark green combination */
+      background: var(--brand-gradient);
+      background-color: var(--brand-color); /* fallback */
+
+      animation: outer-ring-pulse 2.5s infinite cubic-bezier(0.66, 0, 0, 1);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Inner ring container */
+    .inner-ring {
+      position: absolute;
+      top: 26px;
+      left: 26px;
+      right: 26px;
+      bottom: 26px;
+      border-radius: 50%;
+      background-color: var(--dark-orange); /* deep dark green */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .inner-ring::before {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      bottom: 15px;
+      border-radius: 50%;
+      background-color: var(--card-bg);
+      animation: inner-ring-width-pulse 2.5s infinite cubic-bezier(0.66, 0, 0, 1);
+    }
+
+    /* Keyframes for the outer ring pulse */
+    @keyframes outer-ring-pulse {
+      0% {
+        box-shadow:
+          0 0 10px rgba(0, 0, 0, 0.1),
+          0 0 0 0px rgba(var(--brand-color-rgb), 0.35);
+      }
+      50% {
+        box-shadow:
+          0 0 10px rgba(0, 0, 0, 0.1),
+          0 0 0 15px rgba(var(--brand-color-rgb), 0.65);
+      }
+      100% {
+        box-shadow:
+          0 0 10px rgba(0, 0, 0, 0.1),
+          0 0 0 0px rgba(var(--brand-color-rgb), 0);
+      }
+    }
+
+    /* Keyframes for inner ring thickness change */
+    @keyframes inner-ring-width-pulse {
+      0%, 100% {
+        top: 15px;
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+      }
+      50% {
+        top: 5px;
+        left: 5px;
+        right: 5px;
+        bottom: 5px;
+      }
+    }
+
+    .circle-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .circle-content .logo {
+      width: 40px;
+      height: auto;
+    }
+
+    .circle-content .logo-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--logo-blue);
+    }
+
+    /* ---------------- TIME + DETAILS ---------------- */
+
+    .time-display {
+      font-size: 3.4rem;
+      font-weight: 600;
+      margin: 0 0 22px;
+      color: var(--text-primary);
+    }
+
+    .details-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.09);
+      text-align: left;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .details-card h2 {
+      font-size: 1.5rem;
+      margin: 0 0 8px;
+      font-weight: 700;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    .details-card .cities {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin: 0 0 16px;
+    }
+
+    .details-card .expiration-info {
+      font-size: 0.95rem;
+      color: var(--text-light);
+    }
+
+    /* ---------------- MOBILE RESPONSIVENESS ---------------- */
+
+    @media (max-width: 480px) {
+      .ticket-container { padding: 18px; }
+
+      .header-text h1 { font-size: 1.7rem; }
+      .header-text p { font-size: 0.95rem; }
+      .close-btn { font-size: 2rem; }
+
+      .circle {
+        width: 220px;
+        height: 220px;
+        animation: outer-ring-pulse-mobile 2.5s infinite cubic-bezier(0.66, 0, 0, 1);
+      }
+
+      .inner-ring {
+        top: 24px;
+        left: 24px;
+        right: 24px;
+        bottom: 24px;
+      }
+
+      .inner-ring::before {
+        top: 15px;
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+        animation: inner-ring-width-pulse-mobile 2.5s infinite cubic-bezier(0.66, 0, 0, 1);
+      }
+
+      @keyframes outer-ring-pulse-mobile {
+        0% {
+          box-shadow:
+            0 0 10px rgba(0, 0, 0, 0.1),
+            0 0 0 0px rgba(var(--brand-color-rgb), 0.35);
+        }
+        50% {
+          box-shadow:
+            0 0 10px rgba(0, 0, 0, 0.1),
+            0 0 0 20px rgba(var(--brand-color-rgb), 0.65);
+        }
+        100% {
+          box-shadow:
+            0 0 10px rgba(0, 0, 0, 0.1),
+            0 0 0 0px rgba(var(--brand-color-rgb), 0);
+        }
+      }
+
+      @keyframes inner-ring-width-pulse-mobile {
+        0%, 100% {
+          top: 15px;
+          left: 15px;
+          right: 15px;
+          bottom: 15px;
+        }
+        50% {
+          top: 5px;
+          left: 5px;
+          right: 5px;
+          bottom: 5px;
+        }
+      }
+
+      .circle-content .logo { width: 34px; }
+      .circle-content .logo-text { font-size: 1.15rem; }
+      .time-display { font-size: 2.8rem; }
+
+      .details-card h2 {
+        font-size: 1.35rem;
+        line-height: 1.35;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="ticket-container">
+
+    <!-- HEADER -->
+    <div class="card-header">
+      <div class="header-text">
+        <h1>CTtransit</h1>
+        <p>Show operator your ticket</p>
+      </div>
+      <div class="close-btn">&times;</div>
+    </div>
+
+    <!-- CIRCLE VISUAL (PULSING RING) -->
+    <div class="ticket-visual">
+      <div class="circle">
+        <!-- Inner ring -->
+        <div class="inner-ring">
+          <div class="circle-content">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/en/8/8b/CTtransit_logo.png"
+              class="logo"
+              alt="CTtransit Logo"
+              onerror="this.onerror=null; this.src='https://placehold.co/40x40/003a70/ffffff?text=CT';"
+            />
+            <span class="logo-text">CT transit</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIME -->
+    <div class="time-display" id="live-time-display">12:00:00 AM</div>
+
+    <!-- DETAILS -->
+    <div class="details-card">
+      <h2>Adult 2 Hour - Local Service</h2>
+
+      <p class="cities">
+        Hartford, New Haven, Stamford, Bristol, Meriden, New Britain,
+        Wallingford, and Waterbury
+      </p>
+
+      <div class="expiration-info" id="expiration-display">Expires...</div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const liveTimeElement = document.getElementById("live-time-display");
+      const expirationElement = document.getElementById("expiration-display");
+
+      function updateLiveTime() {
+        const now = new Date();
+        const options = {
+          timeZone: "America/New_York",
+          hour: "numeric",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        };
+        liveTimeElement.textContent =
+          new Intl.DateTimeFormat("en-US", options).format(now);
+      }
+
+      function setExpirationTime() {
+        const expirationTime = new Date();
+        expirationTime.setHours(expirationTime.getHours() + 2);
+
+        const formattedDate = new Intl.DateTimeFormat("en-US", {
+          month: "short",
+          day: "numeric",
+        }).format(expirationTime);
+
+        const formattedTime = new Intl.DateTimeFormat("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        }).format(expirationTime);
+
+        expirationElement.textContent = `Expires ${formattedDate} at ${formattedTime}`;
+      }
+
+      updateLiveTime();
+      setExpirationTime();
+      setInterval(updateLiveTime, 1000);
+    });
+  </script>
+</body>
+</html>
