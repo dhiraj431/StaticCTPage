@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+   <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -14,24 +14,18 @@
 
   <style>
     :root {
-      /* Lotus + Dark Green theme (animated circle) */
-      --brand-color: #4FAE5A;              /* Lotus green (pulse/glow) */
-      --brand-color-rgb: 79, 174, 90;      /* RGB for rgba() usage */
-      --dark-orange: #0B4D1A;              /* Deep dark green (inner ring) */
+      /* Single Magenta Theme */
+      --brand-color: #D946EF;              /* Main magenta */
+      --brand-color-rgb: 217, 70, 239;    /* RGB for glow */
+      --dark-orange: #D946EF;             /* Same magenta for inner ring */
 
-      /* Blended outer ring fill (lotus -> dark green) */
-      --brand-gradient: radial-gradient(
-        circle at 30% 30%,
-        #6FD67A 0%,
-        #4FAE5A 45%,
-        #1F7A3A 70%,
-        #0B4D1A 100%
-      );
+      /* Single color outer ring */
+      --brand-gradient: #D946EF;
 
       --text-primary: #333333;
       --text-secondary: #666666;
       --text-light: #888888;
-      --bg-color: #f0f2ff;
+      --bg-color: #fdf2f8;                /* Light pinkish background */
       --card-bg: #ffffff;
       --logo-blue: #003a70;
     }
@@ -120,9 +114,8 @@
       justify-content: center;
       align-items: center;
 
-      /* lotus + dark green combination */
       background: var(--brand-gradient);
-      background-color: var(--brand-color); /* fallback */
+      background-color: var(--brand-color);
 
       animation: outer-ring-pulse 2.5s infinite cubic-bezier(0.66, 0, 0, 1);
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -136,7 +129,7 @@
       right: 26px;
       bottom: 26px;
       border-radius: 50%;
-      background-color: var(--dark-orange); /* deep dark green */
+      background-color: var(--dark-orange);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -250,11 +243,21 @@
     /* ---------------- MOBILE RESPONSIVENESS ---------------- */
 
     @media (max-width: 480px) {
-      .ticket-container { padding: 18px; }
+      .ticket-container {
+        padding: 18px;
+      }
 
-      .header-text h1 { font-size: 1.7rem; }
-      .header-text p { font-size: 0.95rem; }
-      .close-btn { font-size: 2rem; }
+      .header-text h1 {
+        font-size: 1.7rem;
+      }
+
+      .header-text p {
+        font-size: 0.95rem;
+      }
+
+      .close-btn {
+        font-size: 2rem;
+      }
 
       .circle {
         width: 220px;
@@ -270,10 +273,6 @@
       }
 
       .inner-ring::before {
-        top: 15px;
-        left: 15px;
-        right: 15px;
-        bottom: 15px;
         animation: inner-ring-width-pulse-mobile 2.5s infinite cubic-bezier(0.66, 0, 0, 1);
       }
 
@@ -310,9 +309,17 @@
         }
       }
 
-      .circle-content .logo { width: 34px; }
-      .circle-content .logo-text { font-size: 1.15rem; }
-      .time-display { font-size: 2.8rem; }
+      .circle-content .logo {
+        width: 34px;
+      }
+
+      .circle-content .logo-text {
+        font-size: 1.15rem;
+      }
+
+      .time-display {
+        font-size: 2.8rem;
+      }
 
       .details-card h2 {
         font-size: 1.35rem;
@@ -334,10 +341,9 @@
       <div class="close-btn">&times;</div>
     </div>
 
-    <!-- CIRCLE VISUAL (PULSING RING) -->
+    <!-- CIRCLE VISUAL -->
     <div class="ticket-visual">
       <div class="circle">
-        <!-- Inner ring -->
         <div class="inner-ring">
           <div class="circle-content">
             <img
@@ -382,6 +388,7 @@
           second: "2-digit",
           hour12: true,
         };
+
         liveTimeElement.textContent =
           new Intl.DateTimeFormat("en-US", options).format(now);
       }
